@@ -27,6 +27,8 @@ class AppointmentViewset(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = super().get_queryset()
 
+############# Add Description for patient_id query params in swagger Documentation #####################
+
         patient_id = self.request.query_params.get("patient_id")
         if patient_id:
             queryset = queryset.filter(patient_id=patient_id)
@@ -65,7 +67,6 @@ class AppointmentViewset(viewsets.ModelViewSet):
                         'time_id': str(data['time'].id),
                         'symptom': data['symptom'],
                     }, 
-                    automatic_tax={'enabled': True},  # Tax handling
                 )
                 return Response({'session_id': session.id, 'session_url': session.url})
             
@@ -73,7 +74,7 @@ class AppointmentViewset(viewsets.ModelViewSet):
                 logger.error(f'Stripe error: {e}')
                 return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
             
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"error" : serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
     
     def create(self, request, *args, **kwargs):
         """Override: For offline, create directly + PDF logic. For online, error → use checkout."""
@@ -91,7 +92,7 @@ class AppointmentViewset(viewsets.ModelViewSet):
             # send email for appointment confirmation with details
             
             return Response({'appointment': serializer.data})
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"error" : serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
     
     @csrf_exempt
     @require_http_methods(["POST"])
