@@ -9,4 +9,5 @@ router.register('', views.AppointmentViewset)
 urlpatterns = [
     path('', include(router.urls)),
     path('webhook/', views.AppointmentViewset.as_view({'post': 'stripe_webhook'}), name='stripe_webhook'),
+    path('success/', views.success_view, name='payment_success'),
 ]
