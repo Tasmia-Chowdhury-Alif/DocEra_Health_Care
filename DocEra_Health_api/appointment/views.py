@@ -14,6 +14,9 @@ from patient.models import Patient
 from doctor.models import Doctor, AvailableTime
 from core.permissions import IsPatientOrAdmin
 import logging
+from django.shortcuts import render
+from django.http import HttpResponseRedirect
+from django.contrib import messages
 
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
@@ -53,7 +56,7 @@ class AppointmentViewset(viewsets.ModelViewSet):
                     line_items=[{
                         'price_data': {
                             'currency': 'bdt', 
-                            'product_data': {'name': f'Appointment with Dr. {doctor.user.first_name} {doctor.user.last_name}'},
+                            'product_data': {'name': f'Online Appointment with Dr. {doctor.user.first_name} {doctor.user.last_name}'},
                             'unit_amount': amount, 
                         },
                         'quantity': 1,
@@ -94,18 +97,19 @@ class AppointmentViewset(viewsets.ModelViewSet):
             return Response({'appointment': serializer.data})
         return Response({"error" : serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
     
+    @action(detail=False, methods=['post'], url_path='webhook', permission_classes=[])
     @csrf_exempt
-    @require_http_methods(["POST"])
     def stripe_webhook(self, request):
         """Webhook: On payment success, create appointment + email."""
         payload = request.body
         sig_header = request.META['HTTP_STRIPE_SIGNATURE']
+
         try:
             event = stripe.Webhook.construct_event(payload, sig_header, settings.STRIPE_WEBHOOK_SECRET)
         except ValueError:
-            return JsonResponse({'error': 'Invalid payload'}, status=400)
+            return JsonResponse({'error': 'Invalid payload'}, status=status.HTTP_400_BAD_REQUEST)
         except SignatureVerificationError:
-            return JsonResponse({'error': 'Invalid signature'}, status=400)
+            return JsonResponse({'error': 'Invalid signature'}, status=status.HTTP_400_BAD_REQUEST)
 
         if event['type'] == 'checkout.session.completed':
             session = event['data']['object']
@@ -124,7 +128,7 @@ class AppointmentViewset(viewsets.ModelViewSet):
 
                 except KeyError as e:  
                     logger.error(f'Missing metadata: {e}')
-                    return JsonResponse({'error': 'Invalid metadata'}, status=400)
+                    return JsonResponse({'error': 'Invalid metadata'}, status=status.HTTP_400_BAD_REQUEST)
 
                 appointment = models.Appointment.objects.create(
                     patient=patient, 
@@ -139,8 +143,9 @@ class AppointmentViewset(viewsets.ModelViewSet):
                 )
                 logger.info(f'Created appointment {appointment.id} from session {session["id"]}')
 
-        return JsonResponse({'status': 'success'})
-    
+        return JsonResponse({'status': 'success'}, status=status.HTTP_200_OK)
+
+
     @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated, IsPatientOrAdmin])
     def cancel_appointment(self, request, pk=None):
         appointment = self.get_object()
@@ -151,5 +156,24 @@ class AppointmentViewset(viewsets.ModelViewSet):
         appointment.appointment_status = 'Cancelled'
         appointment.save()
         if appointment.appointment_type == 'Online' and appointment.payment_status == 'paid' and appointment.payment_intent_id:
-            stripe.refund.create(payment_intent=appointment.stripe_session_id)
+            stripe.refund.create(payment_intent=appointment.payment_intent_id)
         return Response({'message': 'Appointment cancelled successfully'})
+    
+def success_view(request):
+    session_id = request.GET.get('session_id')
+    if not session_id:
+        messages.error(request, 'No session ID provided.')
+        return HttpResponseRedirect('/contact_us/') 
+    
+    # Verify session status via Stripe API (for extra security)
+    try:
+        session = stripe.checkout.Session.retrieve(session_id)
+        if session.payment_status == 'paid':
+            messages.success(request, 'Payment successful! Your appointment is being processed.')
+        else:
+            messages.error(request, 'Payment not completed.')
+    except stripe.error.StripeError:
+        messages.error(request, 'Unable to verify payment.')
+
+    return HttpResponseRedirect('/appointments/')  
+    
