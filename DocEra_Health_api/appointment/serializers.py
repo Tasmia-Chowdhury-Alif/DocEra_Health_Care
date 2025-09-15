@@ -36,11 +36,15 @@ class AppointmentSerializer(serializers.ModelSerializer):
     
     def validate(self, data):
         doctor = data.get('doctor')
+
+        if not doctor and self.instance:
+            doctor = self.instance.doctor
+        
         time = data.get('time')
 
         if doctor and time and time not in doctor.available_time.all():
             raise serializers.ValidationError("Selected time is not available for this doctor.")
-        if not doctor.fee:
+        if doctor and not doctor.fee:
             raise serializers.ValidationError("Appointments require a fee for this doctor.")
         return data
 
