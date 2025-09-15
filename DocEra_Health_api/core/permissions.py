@@ -18,7 +18,7 @@ class IsPatientOrAdmin(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.user.is_staff:
             return True
-        return obj.user == request.user
+        return obj.patient.user == request.user
     
 
 class IsPatientOrAdminForReviews(permissions.BasePermission):

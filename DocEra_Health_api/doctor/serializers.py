@@ -32,7 +32,7 @@ class DoctorSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Doctor
-        fields = ('id', 'user', 'image', 'designation', 'specialization', 'available_time', 'fee', 'meet_link')
+        fields = ('id', 'user', 'image', 'bio', 'designation', 'specialization', 'available_time', 'fee', 'meet_link')
 
     def validate_fee(self, value):
         if value <= 0:

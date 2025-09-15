@@ -36,6 +36,7 @@ class AvailableTime(models.Model):
 class Doctor(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='doctor')
     image = models.ImageField(upload_to= "doctors/images/", null=True, blank=True)
+    bio = models.TextField(max_length=800, null=True, blank=True)
     designation = models.ManyToManyField(Designation)
     specialization = models.ManyToManyField(Specialization)
     available_time = models.ManyToManyField(AvailableTime)
@@ -54,5 +55,5 @@ class Review(models.Model):
     rating = models.CharField(choices= STAR_CHOICES, max_length=5)
 
     def __str__(self):
-        return f"Patient: {self.reviewer.user.first_name} ; Doctor: {self.doctor.user.first_name}"
+        return f"{self.id} Patient: {self.reviewer.user.username} ; Doctor: {self.doctor.user.username}"
 
