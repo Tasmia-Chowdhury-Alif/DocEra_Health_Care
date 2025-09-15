@@ -154,9 +154,10 @@ class AppointmentViewset(viewsets.ModelViewSet):
             return Response({'error': 'This appointment cannot be canceled.'}, status=status.HTTP_400_BAD_REQUEST)
         appointment.cancel = True
         appointment.appointment_status = 'Cancelled'
-        appointment.save()
         if appointment.appointment_type == 'Online' and appointment.payment_status == 'paid' and appointment.payment_intent_id:
-            stripe.refund.create(payment_intent=appointment.payment_intent_id)
+            stripe.Refund.create(payment_intent=appointment.payment_intent_id)
+            appointment.payment_status = 'refunded'
+        appointment.save()
         return Response({'message': 'Appointment cancelled successfully'})
     
 def success_view(request):
