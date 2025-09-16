@@ -41,6 +41,8 @@ CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=["http://127.0.0
 
 INSTALLED_APPS = [
     "whitenoise.runserver_nostatic",
+    "unfold",
+    "unfold.contrib.filters",
     
     'django.contrib.admin',
     'django.contrib.auth',
