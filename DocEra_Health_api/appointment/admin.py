@@ -1,4 +1,5 @@
 from django.contrib import admin
+from unfold.admin import ModelAdmin
 from .models import Appointment
 
 from django.core.mail import EmailMultiAlternatives
@@ -6,7 +7,7 @@ from django.template.loader import render_to_string
 from django.shortcuts import redirect
 
 # Register your models here.
-class AppointmentAdmin(admin.ModelAdmin):
+class AppointmentAdmin(ModelAdmin):
     list_display = ['id', 'doctor_username', 'patient_username', 'appointment_type', 'appointment_status', 'payment_status', 'symptom', 'time', 'cancel']
     search_fields = ['patient__user__username', 'doctor__user__username'] # Search on patient/doctor username
     list_filter = ['created_at', 'appointment_status', 'payment_status', 'time', 'doctor', 'cancel']  # Filters for date, status, doctor (visible only to superusers)
