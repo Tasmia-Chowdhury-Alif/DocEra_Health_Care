@@ -7,9 +7,17 @@
                 "maxLambdaSize": "15mb",
                 "runtime": "python3.13"
             }
+        },
+        {
+            "src": "staticfiles/**",
+            "use": "@vercel/static"
         }
     ],
     "routes": [
+        {
+            "src": "/static/(.*)",
+            "dest": "/staticfiles/$1"
+        },
         {
             "src": "/(.*)",
             "dest": "DocEra_Health_api/wsgi.py"
