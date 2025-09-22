@@ -1,0 +1,145 @@
+/* Broader targeting for all form controls */
+.form-control, input, textarea, select, .select2-container--default .select2-selection--single, .select2-container--default .select2-selection--multiple {
+    background-color: #343a40 !important;
+    color: #ffffff !important;
+    border: 1px solid #495057 !important;  /* Subtle border for visibility */
+}
+
+/* Placeholders and dropdown text */
+.form-control::placeholder, input::placeholder, textarea::placeholder {
+    color: #adb5bd !important;  /* Gray for contrast */
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+    background-color: #495057 !important;
+    color: #ffffff !important;
+}
+
+.select2-container--default .select2-search--inline .select2-search__field {
+    color: #ffffff !important;
+}
+
+/* CKEditor 5 Dark Theme */
+/* .ck-editor__editable {
+    background-color: #343a40 !important;
+    color: #ffffff !important;
+    border: none !important;
+}
+.ck-toolbar {
+    background-color: #343a40 !important;
+    border: none !important;
+} */
+/* Icons visible */
+/* .ck-button {
+    filter: invert(1) !important;  
+} */
+
+/* CKEditor 5 editable content */
+.ck-content {
+    background-color: #031c58 !important;
+    color: #ffffff !important;
+}
+
+/* Dropdown options */
+/* select option {
+    background-color: #343a40 !important;
+    color: #ffffff !important;
+} */
+
+/* CKEditor Fixed Height with Scrolling */
+.ck-editor__editable_inline {
+    height: 350px !important;  /* Fixed height */
+    overflow-y: auto !important;  /* Enable vertical scrolling */
+    background-color: #1E2439 !important;
+    color: #ffffff !important;
+    border: 1px solid #ffffff !important;  /* Optional border */
+}
+
+
+
+/* Jazzmin-specific overrides */
+.jazzmin-tab-content .form-control {
+    background-color: #343a40 !important;
+    color: #ffffff !important;
+}
+
+/* Existing rules */
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    margin: auto !important;
+}
+.brand-link.navbar-success:hover {
+    background-color: #00bc8c !important;
+}
+#id_tags {
+    display: block;
+    width: 100%;
+    padding: 10px;
+}
+#changelist-search .form-group {
+    margin: 10px !important;
+}
+.alert-success a {
+    color: #ffffff !important;
+}
+
+
+
+/* Select2 Dropdown Options (black text on dark bg) */
+.select2-dropdown {
+    background-color: #343a40 !important;
+    border: 1px solid #495057 !important;
+}
+
+.select2-results__option {
+    color: #ffffff !important;  /* White text for options */
+    background-color: #343a40 !important;
+}
+
+.select2-results__option--highlighted {
+    background-color: #495057 !important;  /* Hover highlight */
+    color: #ffffff !important;
+}
+
+/* Selected Value (gray text fix) */
+.select2-selection__rendered {
+    color: #ffffff !important;  /* Ensure selected is white */
+}
+
+.select2-selection__placeholder {
+    color: #adb5bd !important;  /* Placeholder gray */
+}
+
+/* Multi-Select Search Field (small/position) */
+.select2-search__field {
+    background-color: #343a40 !important;
+    color: #ffffff !important;
+    border: 1px solid #495057 !important;
+    width: 100% !important;  /* Full width */
+    height: 40px !important;  /* Larger height */
+    margin: 5px 0 !important;  /* Better positioning */
+    padding: 5px !important;
+}
+
+/* Many-to-Many Selected Choices */
+.select2-selection--multiple .select2-selection__choice {
+    background-color: #495057 !important;
+    color: #ffffff !important;
+    border: none !important;
+}
+
+
+ul.selector-chooser{
+    width: 40px !important;
+    margin: 40px 50% !important;
+}
+
+
+
+.field-permissions .filter-horizontal {
+    width: 100% !important;
+}
+.selector-available, .selector-chosen {
+    width: 100% !important;
+    min-width: 400px !important;
+}
+
