@@ -20,7 +20,11 @@
     "routes": [
         {
             "src": "/static/(.*)",
-            "dest": "/static/$1"
+            "dest": "DocEra_Health_api/wsgi.py"
+        },
+        {
+            "src": "/media/(.*)",
+            "dest": "DocEra_Health_api/wsgi.py"
         },
         {
             "src": "/(.*)",
