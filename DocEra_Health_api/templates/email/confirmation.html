@@ -1,6 +1,99 @@
 {% load i18n %}
 
 {% block subject %}
+{% blocktrans %}Your DocEra Account is Ready! 🎉{% endblocktrans %}
+{% endblock subject %}
+
+{% block html_body %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Activated - DocEra</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #1a1a2e; font-family: Arial, Helvetica, sans-serif;">
+    {% load static %}
+    <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; background-color: #2d3748; margin: 25px auto; border: 1px solid #22d3ee; border-radius: 12px;">
+        <tr>
+            <td style="padding: 0 12px 30px 12px; margin: 5px 0px;">
+                <!-- Header with Logo -->
+                <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%">
+                    <tr>
+                        <td align="center" style="padding: 20px 0;">
+                            <img src="https://docera-health-care.vercel.app/static/images/docera_logo.png" alt="🏥 DocEra" width="140" style="display: block; border-radius: 12px;">
+                            <p style="margin: 5px 0 0; color: #a0aec0; font-size: 14px; text-align: center;">Healthcare Excellence</p>
+                        </td>
+                    </tr>
+                </table>
+
+                <!-- Main Content -->
+                <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="background: linear-gradient(135deg, #164e63, #22d3ee); border-radius: 12px; border: 1px solid #22d3ee;">
+                    <tr>
+                        <td style="padding: 10px;">
+                            <!-- Success Header -->
+                            <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td align="center" style="padding: 25px 0;">
+                                        <table border="0" cellpadding="0" cellspacing="0" width="60" style="margin: 0 auto;">
+                                            <tr>
+                                                <td style="background-color: #22d3ee; border-radius: 50%; width: 60px; height: 60px; text-align: center; vertical-align: middle; color: #ffffff; font-size: 24px; line-height: 60px;">✓</td>
+                                            </tr>
+                                        </table>
+                                        <h2 style="margin: 10px 0 5px; color: #22d3ee; font-size: 28px; font-weight: bold; text-align: center;">You’re All Set! 🎉</h2>
+                                        <p style="margin: 0; color: #f8fafc; font-size: 16px; text-align: center;">Your DocEra account is now active! ✅</p>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Message -->
+                            <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #2d3748; border-radius: 8px; padding: 30px 4px; margin: 15px 0 30px 0;">
+                                <tr>
+                                    <td style="padding: 15px;">
+                                        <p style="margin: 0 0 10px; color: #f8fafc; font-size: 16px; text-align: center;">Dive into your account and explore our premium healthcare services! 🩺</p>
+                                    </td>
+                                </tr>
+
+                            <!-- Login Button -->
+                                <tr>
+                                    <td align="center" style="padding: 15px;">
+                                        <a href="https://docera-health-care.vercel.app/auth/jwt/create/" style="display: inline-block; background-color: #22d3ee; color: #ffffff; padding: 15px 30px; border-radius: 10px; text-decoration: none; font-size: 16px; font-weight: bold; box-shadow: 0 4px 12px rgba(0,0,0,0.3); transition: background-color 0.3s;">🚀 Log In Now</a>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Footer -->
+                            <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td style="padding: 25px 0; text-align: center; border-top: 1px solid #00ddffff;">
+                                        <p style="margin: 0 0 8px; color: #f8fafc; font-size: 14px;">Got questions? We’re here to help! 😊</p>
+                                        <p style="margin: 0 30px;">
+                                            <a href="mailto:support@docera.com" style="color: white; text-decoration: none; font-weight: bold;">📧 support@docera.com</a> 
+                                            <br>
+                                            <a href="tel:+8801234567890" style="color: white; text-decoration: none; font-weight: bold;">📞 +880 123-456-7890</a>
+                                        </p>
+                                        <p style="margin: 0; color: white; font-size: 14px; font-weight: bold;">— Your DocEra Healthcare Team 🩺</p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
+{% endblock html_body %}
+
+
+
+
+
+{% comment %} 
+{% load i18n %}
+
+{% block subject %}
 {% blocktrans %}Your DocEra Health Care account is Activated{% endblocktrans %}
 {% endblock subject %}
 
@@ -23,4 +116,4 @@
 </body>
 
 </html>
-{% endblock html_body %}
+{% endblock html_body %} {% endcomment %}
