@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Appointment Confirmation - DocEra</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #1a1a2e; font-family: Arial, Helvetica, sans-serif;">
+    {% load static %}
+    <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; background-color: #2d3748; margin: 20px auto; border: 1px solid #4a5568;">
+        <tr>
+            <td style="padding: 0 12px 30px 12px; margin: 5px 0px;">
+                <!-- Header with Logo -->
+                <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%">
+                    <tr>
+                        <td align="center" style="padding: 20px 0;">
+                            <img src="https://docera-health-care.vercel.app/static/images/docera_logo.png" alt="🏥 DocEra" width="140" style="display: block; border-radius: 12px;">
+                            <p style="margin: 5px 0 0; color: #a0aec0; font-size: 14px; text-align: center;">Healthcare Excellence</p>
+                        </td>
+                    </tr>
+                </table>
+
+                <!-- Main Content -->
+                <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: rgba(26, 32, 44, 0.95); border-radius: 8px; border: 1px solid #4a5568;">
+                    <tr>
+                        <td style="padding: 12px;">
+                            <!-- Success Header -->
+                            <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td align="center" style="padding: 12px;">
+                                        <table border="0" cellpadding="0" cellspacing="0" width="60" style="margin: 0 auto;">
+                                            <tr>
+                                                <td style="background-color: #10b981; border-radius: 50%; width: 60px; height: 60px; text-align: center; vertical-align: middle; color: #ffffff; font-size: 24px; line-height: 60px;">✓</td>
+                                            </tr>
+                                        </table>
+                                        <h2 style="margin: 10px 0 5px; color: #63b3ed; font-size: 24px; font-weight: bold; text-align: center;">Online Appointment Confirmed!</h2>
+                                        <p style="margin: 0; color: #a0aec0; font-size: 14px; text-align: center;">Your virtual consultation is all set</p>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Patient Info -->
+                            <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #2d3748; border-radius: 8px; padding: 15px; margin: 15px 0; border-left: 4px solid #0ea5e9;">
+                                <tr>
+                                    <td style="padding: 15px;">
+                                        <h3 style="margin: 0 0 10px; color: #63b3ed; font-size: 16px; font-weight: bold;">Hello, {{ patient.user.first_name }} {{ patient.user.last_name }}</h3>
+                                        <p style="margin: 0; color: #a0aec0; font-size: 14px;">Patient ID: <strong>#{{ patient.id }}</strong></p>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Doctor Information -->
+                            <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #2d3748; border-radius: 8px; padding: 15px; margin: 15px 0;">
+                                <tr>
+                                    <td style="padding: 15px;">
+                                        <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                            <tr>
+                                                <td width="80" style="padding-right: 15px; vertical-align: top;">
+                                                    {% if doctor.image %}
+                                                        <img src="https://docera-health-care.vercel.app{{ doctor.image.url }}" alt="Doctor Avatar" width="80" height="80" style="border-radius: 50%; display: block;">
+                                                    {% else %}
+                                                        <div style="width: 80px; height: 80px; border-radius: 50%; background-color: #4a5568; text-align: center; line-height: 80px; color: #ffffff; font-size: 28px;">👨‍⚕️</div>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    <h3 style="margin: 0 0 8px; color: #63b3ed; font-size: 18px; font-weight: bold;">Dr. {{ doctor.user.first_name }} {{ doctor.user.last_name }}</h3>
+                                                    <p style="margin: 0 0 4px; color: #a0aec0; font-size: 14px;">
+                                                        {% for specialization in doctor.specialization.all %}
+                                                            {% if not forloop.last %}
+                                                                {{ specialization.name }}
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    </p>
+                                                    <p style="margin: 0; color: #a0aec0; font-size: 13px;">
+                                                        {% for designation in doctor.designation.all %}
+                                                            {% if not forloop.last %}
+                                                                {{ designation.name }}
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    </p>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Appointment Details -->
+                            <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #2d3748; border-radius: 8px; padding: 15px; margin: 15px 0;">
+                                <tr>
+                                    <td style="padding: 15px;">
+                                        <h3 style="margin: 0 0 15px; color: #63b3ed; font-size: 16px; font-weight: bold;">📅 Appointment Details</h3>
+                                        <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                            <tr>
+                                                <td style="padding: 10px 0;">
+                                                    <p style="margin: 0 0 4px; color: #68d391; font-size: 12px; font-weight: bold; text-transform: uppercase;">Appointment ID</p>
+                                                    <p style="margin: 0; color: #a0aec0; font-size: 14px; font-weight: bold;">{{ appointment.id }}</p>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 10px 0; border-top: 1px solid #4a5568;">
+                                                    <p style="margin: 0 0 4px; color: #68d391; font-size: 12px; font-weight: bold; text-transform: uppercase;">Date & Time</p>
+                                                    <p style="margin: 0; color: #a0aec0; font-size: 14px; font-weight: bold;">{{ appointment.time }}</p>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 10px 0; border-top: 1px solid #4a5568;">
+                                                    <p style="margin: 0 0 4px; color: #68d391; font-size: 12px; font-weight: bold; text-transform: uppercase;">Type</p>
+                                                    <p style="margin: 0; color: #a0aec0; font-size: 14px; font-weight: bold;">🌐 Online Consultation</p>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 10px 0; border-top: 1px solid #4a5568;">
+                                                    <p style="margin: 0 0 4px; color: #68d391; font-size: 12px; font-weight: bold; text-transform: uppercase;">Consultation Fee</p>
+                                                    <p style="margin: 0; color: #a0aec0; font-size: 16px; font-weight: bold;">৳{{ doctor.fee }} ({{ appointment.payment_status}})</p>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Meeting Link -->
+                            {% if doctor.meet_link %}
+                            <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #2d3748; border-radius: 8px; padding: 15px; margin: 15px 0;">
+                                <tr>
+                                    <td align="center" style="padding: 15px;">
+                                        <h3 style="margin: 0 0 10px; color: #63b3ed; font-size: 16px; font-weight: bold;">🎥 Join Your Virtual Consultation</h3>
+                                        <a href="{{ doctor.meet_link }}" style="display: inline-block; background-color: #7c3aed; color: #ffffff; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-size: 14px; font-weight: bold;">🚀 Join Meeting</a>
+                                        <p style="margin: 10px 0 0; color: #a0aec0; font-size: 13px;">Click the button above 5 minutes before your appointment</p>
+                                    </td>
+                                </tr>
+                            </table>
+                            {% endif %}
+
+                            <!-- Symptoms -->
+                            {% if appointment.symptom %}
+                            <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #2d3748; border-radius: 8px; padding: 15px; margin: 15px 0;">
+                                <tr>
+                                    <td style="padding: 15px;">
+                                        <h3 style="margin: 0 0 10px; color: #63b3ed; font-size: 16px; font-weight: bold;">🩺 Reported Symptoms</h3>
+                                        <p style="margin: 0; color: #a0aec0; font-size: 14px; line-height: 1.5;">{{ appointment.symptom }}</p>
+                                    </td>
+                                </tr>
+                            </table>
+                            {% endif %}
+
+                            <!-- Important Notes -->
+                            <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #2d3748; border-radius: 8px; padding: 15px; margin: 15px 0 30px 0;">
+                                <tr>
+                                    <td style="padding: 15px;">
+                                        <h3 style="margin: 0 0 10px; color: #63b3ed; font-size: 16px; font-weight: bold;">⚠️ Important Reminders</h3>
+                                        <ul style="margin: 0; padding-left: 20px; color: #a0aec0; font-size: 14px; line-height: 1.5;">
+                                            <li>Join the meeting 5 minutes before your scheduled time</li>
+                                            <li>Ensure you have a stable internet connection</li>
+                                            <li>Find a quiet, well-lit space for the consultation</li>
+                                            <li>Keep your medical records and current medications list ready</li>
+                                        </ul>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Footer -->
+                            <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td style="padding: 15px 0; text-align: center; border-top: 1px solid #4a5568;">
+                                        <p style="margin: 0 0 8px; color: #a0aec0; font-size: 14px;">Need to reschedule or have questions?</p>
+                                        <p style="margin: 0 0 10px;">
+                                            <a href="mailto:support@docera.com" style="color: #63b3ed; text-decoration: none; font-weight: bold;">📧 support@docera.com</a>
+                                            <br>
+                                            <a href="tel:+8801234567890" style="color: #63b3ed; text-decoration: none; font-weight: bold;">📞 +880 123-456-7890</a>
+                                        </p>
+                                        <p style="margin: 0; color: #63b3ed; font-size: 14px; font-weight: bold;">— DocEra Healthcare Team</p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
+
+
+
+
+
+{% comment %} <!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Appointment Confirmation - DocEra</title>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            .email-container {
+                background: linear-gradient(135deg, #1a1a2e, #16213e) !important;
+            }
+
+            .appointment-card {
+                background: linear-gradient(135deg, #2d3748, #1a202c) !important;
+                border: 1px solid #4a5568 !important;
+            }
+
+            .text-primary {
+                color: #63b3ed !important;
+            }
+
+            .text-secondary {
+                color: #a0aec0 !important;
+            }
+
+            .text-success {
+                color: #68d391 !important;
+            }
+
+            .divider {
+                background: #4a5568 !important;
+            }
+        }
+
+        @media only screen and (max-width: 600px) {
+            .email-container {
+                padding: 16px !important;
+            }
+
+            .appointment-card {
+                padding: 20px !important;
+                margin: 16px 0 !important;
+            }
+
+            .doctor-info {
+                flex-direction: column !important;
+                text-align: center !important;
+            }
+
+            .doctor-avatar {
+                margin-bottom: 16px !important;
+            }
+        }
+    </style>
+</head>
+
+<body style="margin: 0; padding: 0; background-color: #f8fafc; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+    {% load static %}
+    <div class="email-container"
+        style="background: linear-gradient(135deg, #667eea, #764ba2); padding: 40px 20px; min-height: 100vh;">
+
+        <!-- Header with Logo -->
+        <div style="text-align: center; margin-bottom: 32px;">
+            <div
+                style="background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border-radius: 20px; padding: 24px; display: inline-block; box-shadow: 0 8px 32px rgba(0,0,0,0.1);">
+                <!-- <h1 style="margin: 0; color: #4338ca; font-size: 32px; font-weight: 800; letter-spacing: -1px;">
+                    🏥 DocEra
+                </h1> -->
+                <img src="{% static 'images/DocEra_NO_BG.png' %}" alt="🏥 DocEra" width="140px">
+                <p style="margin: 2px 0 0; color: #6b7280; font-size: 14px; font-weight: 500;">
+                    Healthcare Excellence
+                </p>
+            </div>
+        </div>
+
+        <!-- Main Appointment Card -->
+        <div class="appointment-card"
+            style="background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border-radius: 24px; padding: 40px; margin: 0 auto; max-width: 600px; box-shadow: 0 20px 60px rgba(0,0,0,0.15);">
+
+            <!-- Success Header -->
+            <div style="text-align: center; margin-bottom: 32px;">
+                <div style="background: linear-gradient(135deg, #10b981, #059669); color: white; border-radius: 50%; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 36px; box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);">
+                    ✓
+                </div>
+                <h2 class="text-primary" style="margin: 0 0 8px; color: #4338ca; font-size: 28px; font-weight: 700;">
+                    Online Appointment Confirmed!
+                </h2>
+                <p class="text-secondary" style="margin: 0; color: #6b7280; font-size: 16px;">
+                    Your virtual consultation is all set
+                </p>
+            </div>
+
+            <!-- Patient Info -->
+            <div
+                style="background: linear-gradient(135deg, #f0f9ff, #e0f2fe); border-radius: 16px; padding: 24px; margin-bottom: 24px; border-left: 4px solid #0ea5e9;">
+                <h3 style="margin: 0 0 12px; color: #0c4a6e; font-size: 18px; font-weight: 600;">
+                    👋 Hello, {{ patient.user.first_name }} {{ patient.user.last_name }}
+                </h3>
+                <p style="margin: 0; color: #075985; font-size: 14px;">
+                    Patient ID: <strong>#{{ patient.id }}</strong>
+                </p>
+            </div>
+
+            <!-- Doctor Information -->
+            <div
+                style="background: linear-gradient(135deg, #fef3e2, #fde68a); border-radius: 16px; padding: 24px; margin-bottom: 24px;">
+                <div class="doctor-info" style="display: flex; align-items: center; gap: 20px;">
+                    <div class="doctor-avatar"
+                        style="width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, #f59e0b, #d97706); display: flex; align-items: center; justify-content: center; color: white; font-size: 28px; font-weight: 700; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);">
+                        <img src="{{ doctor.profile_image_url | default:'https://via.placeholder.com/80?text=👨‍⚕️' }}" alt="Doctor Avatar" width="80" height="80" style="border-radius: 50%; display: block;">
+                    </div>
+                    <div style="flex: 1;">
+                        <h3 style="margin: 0 0 8px; color: #92400e; font-size: 20px; font-weight: 700;">
+                            Dr. {{ doctor.user.first_name }} {{ doctor.user.last_name }}
+                        </h3>
+                        <p style="margin: 0 0 4px; color: #b45309; font-size: 14px; font-weight: 500;">
+                            {% for specialization in doctor.specialization.all %} 
+                                {% if not forloop.last %} 
+                                    {{ specialization.name }}
+                                {% endif %}
+                            {% endfor %}
+                        </p>
+                        <p style="margin: 0; color: #a16207; font-size: 13px;">
+                            {% for designation in doctor.designation.all %}
+                                {% if not forloop.last %} 
+                                    {{ designation.name }}
+                                {% endif %}
+                            {% endfor %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Appointment Details -->
+            <div
+                style="background: linear-gradient(135deg, #f0fdf4, #dcfce7); border-radius: 16px; padding: 24px; margin-bottom: 24px;">
+                <h3
+                    style="margin: 0 0 16px; color: #15803d; font-size: 18px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                    📅 Appointment Details
+                </h3>
+
+                <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #bbf7d0;">
+                    <p
+                        style="margin: 0 0 4px; color: #16a34a; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
+                        Appointment ID
+                    </p>
+                    <p style="margin: 0; color: #15803d; font-size: 16px; font-weight: 700;">
+                        {{ appointment.id }}
+                    </p>
+                </div>
+                <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #bbf7d0;">
+                    <p style="margin: 0 0 4px; color: #16a34a; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
+                        Date & Time
+                    </p>
+                    <p style="margin: 0; color: #15803d; font-size: 16px; font-weight: 700;">
+                        {{ appointment.time }}
+                    </p>
+                </div>
+                <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #bbf7d0;">
+                    <p
+                        style="margin: 0 0 4px; color: #16a34a; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
+                        Type
+                    </p>
+                    <p style="margin: 0; color: #15803d; font-size: 16px; font-weight: 700;">
+                        🌐 Online Consultation
+                    </p>
+                </div>
+
+                <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #bbf7d0;">
+                    <p
+                        style="margin: 0 0 4px; color: #16a34a; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
+                        Consultation Fee
+                    </p>
+                    <p style="margin: 0; color: #15803d; font-size: 18px; font-weight: 800;">
+                        ৳{{ doctor.fee }} ({{ appointment.payment_status}})
+                    </p>
+                </div>
+            </div>
+
+            <!-- Meeting Link -->
+            {% if doctor.meet_link %}
+            <div
+                style="background: linear-gradient(135deg, #ede9fe, #ddd6fe); border-radius: 16px; padding: 24px; margin-bottom: 24px; text-align: center;">
+                <h3 style="margin: 0 0 16px; color: #7c3aed; font-size: 18px; font-weight: 600;">
+                    🎥 Join Your Virtual Consultation
+                </h3>
+                <a href="{{ doctor.meet_link }}"
+                    style="display: inline-block; background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; padding: 16px 32px; border-radius: 12px; text-decoration: none; font-weight: 600; font-size: 16px; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3); transition: transform 0.2s;"
+                    onmouseover="this.style.transform='translateY(-2px)'"
+                    onmouseout="this.style.transform='translateY(0)'">
+                    🚀 Join Meeting
+                </a>
+                <p style="margin: 16px 0 0; color: #6d28d9; font-size: 13px;">
+                    Click the button above 5 minutes before your appointment
+                </p>
+            </div>
+            {% endif %}
+
+            <!-- Symptoms -->
+            {% if appointment.symptom %}
+            <div
+                style="background: linear-gradient(135deg, #fef2f2, #fee2e2); border-radius: 16px; padding: 24px; margin-bottom: 24px;">
+                <h3 style="margin: 0 0 12px; color: #dc2626; font-size: 18px; font-weight: 600;">
+                    🩺 Reported Symptoms
+                </h3>
+                <p style="margin: 0; color: #991b1b; font-size: 15px; line-height: 1.6;">
+                    {{ appointment.symptom }}
+                </p>
+            </div>
+            {% endif %}
+
+            <!-- Important Notes -->
+            <div
+                style="background: linear-gradient(135deg, #fffbeb, #fef3c7); border-radius: 16px; padding: 24px; margin-bottom: 32px;">
+                <h3 style="margin: 0 0 16px; color: #d97706; font-size: 18px; font-weight: 600;">
+                    ⚠️ Important Reminders
+                </h3>
+                <ul style="margin: 0; padding-left: 20px; color: #92400e; font-size: 14px; line-height: 1.6;">
+                    <li>Join the meeting 5 minutes before your scheduled time</li>
+                    <li>Ensure you have a stable internet connection</li>
+                    <li>Find a quiet, well-lit space for the consultation</li>
+                    <li>Keep your medical records and current medications list ready</li>
+                </ul>
+            </div>
+
+            <!-- Footer -->
+            <div class="divider" style="height: 1px; background: #e5e7eb; margin: 32px 0;"></div>
+
+            <div style="text-align: center;">
+                <p style="margin: 0 0 8px; color: #6b7280; font-size: 14px;">
+                    Need to reschedule or have questions?
+                </p>
+                <p style="margin: 0 0 16px;">
+                    <a href="mailto:support@docera.com"
+                        style="color: #4338ca; text-decoration: none; font-weight: 600;">
+                        📧 support@docera.com
+                    </a>
+                </p>
+                <h4 style="margin: 0; font-weight: 700; color: #4338ca; font-size: 16px;">
+                    — DocEra Healthcare Team
+                </h4>
+            </div>
+        </div>
+
+        <!-- Bottom Spacing -->
+        <div style="height: 40px;"></div>
+    </div>
+</body>
+
+</html> {% endcomment %}
