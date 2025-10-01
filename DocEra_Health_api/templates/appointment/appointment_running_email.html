@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Ready to Meet You! - DocEra</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #1a1a2e; font-family: Arial, Helvetica, sans-serif;">
+    {% load static %}
+    <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; background-color: #2d3748; margin: 25px auto; border: 1px solid #34d399; border-radius: 12px;">
+        <tr>
+            <td style="padding: 0 12px 30px 12px; margin: 5px 0px;">
+                <!-- Header with Logo -->
+                <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%">
+                    <tr>
+                        <td align="center" style="padding: 25px 0;">
+                            <img src="https://docera-health-care.vercel.app/static/images/docera_logo.png" alt="🏥 DocEra" width="150" style="display: block; border-radius: 12px;">
+                            <p style="margin: 5px 0 0; color: #f8fafc; font-size: 15px; text-align: center;">Healthcare Excellence</p>
+                        </td>
+                    </tr>
+                </table>
+
+                <!-- Main Content -->
+                <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="background: linear-gradient(135deg, #1e40af, #34d399); border-radius: 12px; border: 1px solid #34d399;">
+                    <tr>
+                        <td style="padding: 12px;">
+                            <!-- Greeting -->
+                            <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #2d3748; border-radius: 8px; padding: 25px; margin: 15px 0; border-left: 4px solid #34d399; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
+                                <tr>
+                                    <td style="padding: 20px 0;">
+                                        <h2 style="margin: 0 0 10px; color: #34d399; font-size: 28px; font-weight: bold; text-align: center;">Your Doctor Awaits! 🩺</h2>
+                                        <p style="margin: 0 0 10px; color: #f8fafc; font-size: 16px; text-align: center;">Hey there, <strong style="color: #34d399;">{{ user.first_name }} {{ user.last_name }}</strong>! Your virtual consultation is live! 🎥</p>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Message -->
+                            <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #2d3748; border-radius: 8px; padding: 25px; margin: 15px 0 30px 0;;">
+                                <tr>
+                                    <td style="padding: 25px 10px;">
+                                        <p style="margin: 0 0 10px; color: #f8fafc; font-size: 16px;">You’re set to meet <strong style="color: #34d399;">Dr. {{ doctor.user.first_name }} {{ doctor.user.last_name }}</strong>! 🌟</p>
+                                        <p style="margin: 0 0 10px; color: #f8fafc; font-size: 16px;">Jump into the call now—your health awaits! 🚀</p>
+                                    </td>
+                                </tr>
+                            {% comment %} <!-- </table> -->
+
+                            <!-- Meet Link -->
+                            <!-- <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #2d3748; border-radius: 8px; padding: 25px; margin: 15px 0;"> --> {% endcomment %}
+                                <tr>
+                                    <td align="center" style="padding: 25px 10px;">
+                                        <h3 style="margin: 0 0 10px; color: #34d399; font-size: 18px; font-weight: bold;">🎥 Join Your Consultation</h3>
+                                        <a href="{{ doctor.meet_link }}" style="display: inline-block; background-color: #10b981; color: #ffffff; padding: 15px 30px; border-radius: 10px; text-decoration: none; font-size: 16px; font-weight: bold; box-shadow: 0 4px 12px rgba(0,0,0,0.3); transition: background-color 0.3s;">🚀 Join Now</a>
+                                        <p style="margin: 10px 0 0; color: #f8fafc; font-size: 14px;">Click to connect instantly! 🕒</p>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Footer -->
+                            <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td style="padding: 25px 0; text-align: center; border-top: 1px solid #34d399;">
+                                        <p style="margin: 0 0 8px; color: #f8fafc; font-size: 14px;">Questions? We’ve got you covered! 🌟</p>
+                                        <p style="margin: 0 0 10px;">
+                                            <a href="mailto:support@docera.com" style="color: #7c3aed; text-decoration: none; font-weight: bold;">📧 support@docera.com</a> | 
+                                            <a href="tel:+8801234567890" style="color: #7c3aed; text-decoration: none; font-weight: bold;">📞 +880 123-456-7890</a>
+                                        </p>
+                                        <p style="margin: 0; color: #7c3aed; font-size: 14px; font-weight: bold;">— Your DocEra Healthcare Team 🩺</p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
+
+
+
+
+
+{% comment %} <div>
+    <h3>Hello {{user.first}} {{user.last_name}}</h3>
+    <p>Hope you are doing well. You requested for an online appointment with
+        {{doctor.user.first_name}} {{doctor.user.last_name}}</p>
+    <p>Your doctor is available to meet with you. Join the below link as soon as possible</p>
+    <p>Meet link : <a href="{{doctor.meet_link}}" target="_blank">{{doctor.meet_link}}</a></p>
+    <p>Thanks</p>
+    <p>SmartCare</p>
+</div> {% endcomment %}
