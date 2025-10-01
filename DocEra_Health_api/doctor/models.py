@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from patient.models import Patient
 from django.core.validators import URLValidator
+from django_ckeditor_5.fields import CKEditor5Field
 
 # Create your models here.
 STAR_CHOICES = [
@@ -36,7 +37,7 @@ class AvailableTime(models.Model):
 class Doctor(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='doctor')
     image = models.ImageField(upload_to= "doctors/images/", null=True, blank=True)
-    bio = models.TextField(max_length=800, null=True, blank=True)
+    bio = CKEditor5Field(max_length=1000, null=True, blank=True, config_name='default')
     designation = models.ManyToManyField(Designation)
     specialization = models.ManyToManyField(Specialization)
     available_time = models.ManyToManyField(AvailableTime)
