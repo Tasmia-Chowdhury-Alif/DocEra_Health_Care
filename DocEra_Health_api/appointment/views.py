@@ -17,10 +17,36 @@ import logging
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.contrib import messages
+from django.core.mail import EmailMessage, EmailMultiAlternatives
+from django.template.loader import render_to_string
 
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 logger = logging.getLogger(__name__)
+
+
+
+def send_email(appointment, subject, messege_template):
+    """
+    Enhanced email sending function with proper context for both online and offline appointments
+    """
+    try:
+        patient_email = appointment.patient.user.email
+        html_message = render_to_string(messege_template, context={
+            'patient': appointment.patient, 
+            'doctor': appointment.doctor,
+            'appointment': appointment,
+        })
+
+        email = EmailMultiAlternatives(subject=subject,  to=[patient_email])
+        email.attach_alternative(html_message, "text/html")
+        email.send()
+
+        logger.info(f'Email sent successfully to {patient_email} for appointment {appointment.id}')
+        
+    except Exception as e:
+        logger.error(f'Failed to send email to {patient_email}: {str(e)}')
+
 
 class AppointmentViewset(viewsets.ModelViewSet):
     queryset = models.Appointment.objects.all().select_related('doctor', 'patient')  # Optimized N+1
@@ -92,8 +118,14 @@ class AppointmentViewset(viewsets.ModelViewSet):
             appointment.appointment_status = 'Running'
             appointment.save()
 
-            # send email for appointment confirmation with details
-            
+            # send email for appointment confirmation with details 
+            try:
+                send_email(appointment, subject=f"Offline Appointment Confirmed - DocEra HealthCare | {appointment.time}", messege_template="appointment/offline_appointment.html")
+                logger.info(f"Offline appointment {appointment.id} created and email sent")
+            except Exception as e:
+                logger.error(f"Appointment created but email failed: {str(e)}")
+                # Doesn't fail the appointment creation if email fails
+
             return Response({'appointment': serializer.data})
         return Response({"error" : serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
     
@@ -141,6 +173,14 @@ class AppointmentViewset(viewsets.ModelViewSet):
                     symptom=symptom, 
                     time=time
                 )
+
+                #Send online appointment confirmation email
+                try:
+                    send_email(appointment, subject=f"Online Appointment Confirmed DocEra Healthcare | {appointment.time}", messege_template="appointment/online_appointment.html")
+                    logger.info(f"Online appointment {appointment.id} created and email sent")
+                except Exception as e:
+                    logger.error(f"Online appointment created but email failed: {str(e)}")
+
                 logger.info(f'Created appointment {appointment.id} from session {session["id"]}')
 
         return JsonResponse({'status': 'success'}, status=status.HTTP_200_OK)
