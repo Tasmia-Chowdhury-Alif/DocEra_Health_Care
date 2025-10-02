@@ -1,3 +1,10 @@
+"""
+Django settings for DocEra Health API.
+
+Configures DRF for JWT auth, Djoser for user management/email activation, Spectacular for OpenAPI docs, Jazzmin for admin UI, CKEditor for rich text, Stripe for Online payments, Whitenoise for static, etc.
+Email backend for SMTP notifications (activation, appointments).
+Supports PostgreSQL/SQLite databases via env.
+"""
 from pathlib import Path
 import dj_database_url 
 import environ
@@ -40,6 +47,7 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt.token_blacklist",
     "djoser",
     "corsheaders",
+    "debug_toolbar",
     "django_filters",
     "drf_spectacular",
     # Internal Apps
@@ -52,6 +60,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -162,6 +171,10 @@ STRIPE_PUBLISHABLE_KEY = env("STRIPE_PUBLISHABLE_KEY")
 STRIPE_SECRET_KEY = env("STRIPE_SECRET_KEY") 
 STRIPE_WEBHOOK_SECRET = env("STRIPE_WEBHOOK_SECRET") 
 
+INTERNAL_IPS = [
+    '127.0.0.1',
+    'localhost',
+]
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -216,10 +229,41 @@ DJOSER = {
 SPECTACULAR_SETTINGS = {
     'TITLE': 'DocEra Health API',
     'DESCRIPTION': 'A clean and reliable backend for a Hospital Management System built with Django REST Framework. It handles patient info, doctor schedules, appointments (online & offline), and secure login with JWT and email verification. Online appointments trigger meet link emails automatically.',
-    'VERSION': '2.0.1',
+    'VERSION': '1.0.1',
     'SERVE_INCLUDE_SCHEMA': False,
-    "COMPONENT_SPLIT_REQUEST": True,
+    "COMPONENT_SPLIT_REQUEST": True, # Splits complex request bodies for better schema clarity.
     # OTHER SETTINGS
+    'SWAGGER_UI_SETTINGS': {
+        'deepLinking': True,
+        # Improves UX by enabling direct endpoint navigation in Swagger UI.
+    },
+    'TAGS': [  # Groups endpoints in Swagger for better navigation.
+        {'name': 'auth', 'description': 'User registration, activation, login (Djoser/JWT)'},
+        {'name': 'patient', 'description': 'Patient profile management'},
+        {'name': 'doctor', 'description': 'Doctor profiles, designations, specializations, available times, reviews'},
+        {'name': 'Appointments', 'description': 'Online and Offline Appointment booking, online payments (Stripe), Appointment cancellations, webhooks'},
+        {'name': 'service', 'description': 'Medical services CRUD'},
+        {'name': 'contact_us', 'description': 'Contact inquiries CRUD'},
+    ],
+    'ENUM_NAME_OVERRIDES': {  # Readable enums in schemas.
+        'AppointmentType': 'appointment.models.APPOINTMENT_TYPE',
+        'AppointmentStatus': 'appointment.models.APPOINTMENT_STATUS',
+        'PaymentStatus': 'appointment.models.PAYMENT_STATUS',
+        'RoleChoices': 'core.models.UserProfile.ROLE_CHOICES',
+        'StarChoices': 'doctor.models.STAR_CHOICES',
+    },
+    'SCHEMA_PATH_PREFIX': '/api/v1/',  # Groups paths under version, reduces 'api' fallback
+    'POST_PROCESSING_HOOKS': [
+        # Custom hook to filter unwanted paths and tags from the OpenAPI dict
+        lambda openapi_schema: {
+            **openapi_schema,
+            'paths': {
+                path: methods
+                for path, methods in openapi_schema['paths'].items()
+                if path != '/' and not any('api' in tag or 'default' in tag for method in methods.values() for tag in method.get('tags', []))
+            }
+        }
+    ],
 }
 
 
