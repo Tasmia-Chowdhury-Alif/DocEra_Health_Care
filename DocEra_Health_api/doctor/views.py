@@ -1,3 +1,10 @@
+"""
+Views for doctor management.
+
+ViewSets for Doctor, Designation, Specialization, AvailableTime, Review.
+Custom filters (e.g., by doctor_id), pagination for doctors.
+Permissions: AdminOrReadOnly for most, AuthOrReadOnly for reviews.
+"""
 from django.shortcuts import render
 from rest_framework import viewsets, filters
 from rest_framework.pagination import PageNumberPagination
@@ -5,6 +12,7 @@ from . import models
 from . import serializers
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from core.permissions import IsAdminOrReadOnly
+from drf_spectacular.utils import extend_schema_view, extend_schema, OpenApiParameter
 
 # Create your views here.
 
@@ -24,14 +32,19 @@ class FilterByDoctorId(filters.BaseFilterBackend):
             return queryset.filter(doctor__id=doctor_id)
         return queryset
 
-
+@extend_schema_view(
+    list=extend_schema(tags=['doctor'], description='List doctors (paginated).'),
+    create=extend_schema(tags=['doctor'], description='Create doctor (admin).')
+)
 class DoctorViewset(viewsets.ModelViewSet):
     permission_classes = [IsAdminOrReadOnly]
     queryset = models.Doctor.objects.all()
     serializer_class = serializers.DoctorSerializer
     pagination_class = DoctorPagination
 
-
+@extend_schema_view(
+    list=extend_schema(tags=['doctor'], description='List designations; search by name/slug.')
+)
 class DesignationViewset(viewsets.ModelViewSet):
     permission_classes = [IsAdminOrReadOnly]
     queryset = models.Designation.objects.all()
@@ -39,7 +52,9 @@ class DesignationViewset(viewsets.ModelViewSet):
     filter_backends = [filters.SearchFilter]
     search_fields = ['name', 'slug']
 
-
+@extend_schema_view(
+    list=extend_schema(tags=['doctor'], description='List specialization; search by name/slug.')
+)
 class SpecializationViewset(viewsets.ModelViewSet):
     permission_classes = [IsAdminOrReadOnly]
     queryset = models.Specialization.objects.all()
@@ -47,16 +62,22 @@ class SpecializationViewset(viewsets.ModelViewSet):
     filter_backends = [filters.SearchFilter]
     search_fields = ['name', 'slug']
 
-
+@extend_schema_view(
+    list=extend_schema(tags=['doctor'], description="List Doctor's Available Time; Filters by doctor_id param.")
+)
 class AvailableTimeViewset(viewsets.ModelViewSet):
     permission_classes = [IsAdminOrReadOnly]
     queryset = models.AvailableTime.objects.all()
     serializer_class = serializers.AvailableTimeSerializer
     filter_backends = [FilterByDoctorId]
+    # Filters by doctor_id param.
 
-
+@extend_schema_view(
+    list=extend_schema(tags=['doctor'], description="List Doctor's Review; Filters by doctor_id param.")
+)
 class ReviewViewset(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = models.Review.objects.all()
     serializer_class = serializers.ReviewSerializer
     filter_backends = [FilterByDoctorId]
+    # Filters reviews by doctor_id.

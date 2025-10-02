@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from . import models
+from drf_spectacular.utils import extend_schema_serializer, OpenApiExample
 
 
 class DesignationSerializer(serializers.ModelSerializer):
@@ -21,7 +22,9 @@ class AvailableTimeSerializer(serializers.ModelSerializer):
         model = models.AvailableTime
         fields = "__all__"
 
-
+@extend_schema_serializer(
+    examples=[OpenApiExample('Doctor Create', value={'user': 'user1', 'fee': 500, 'meet_link': 'https://meet.example.com'})]
+)
 class DoctorSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField(many=False)
     designation = serializers.StringRelatedField(many=True)

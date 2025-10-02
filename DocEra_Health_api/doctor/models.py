@@ -1,3 +1,6 @@
+"""
+Models for doctor management. Includes designations, specializations, available times, doctors (with bio/meet_link), reviews (with ratings).
+"""
 from django.db import models
 from django.contrib.auth.models import User
 from patient.models import Patient
