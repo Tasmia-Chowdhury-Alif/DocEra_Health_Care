@@ -1,3 +1,9 @@
+"""
+Admin configuration for Appointment model.
+
+Custom list display, filters, readonly fields, queryset filtering by user (doctors see own, superusers all).
+Triggers email on save for online running appointments.
+"""
 from django.contrib import admin
 from .models import Appointment
 

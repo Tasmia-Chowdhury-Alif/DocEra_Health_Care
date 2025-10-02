@@ -1,3 +1,10 @@
+"""
+Views for appointment management.
+
+ViewSet for CRUD, with custom actions for online creation (Stripe session), webhook (payment completion/email), cancellation (refund if online).
+Permissions: Authenticated, patient/admin only.
+Emails triggered on creation/update.
+"""
 import stripe
 from stripe.error import SignatureVerificationError
 from django.conf import settings
@@ -19,6 +26,7 @@ from django.http import HttpResponseRedirect
 from django.contrib import messages
 from django.core.mail import EmailMessage, EmailMultiAlternatives
 from django.template.loader import render_to_string
+from drf_spectacular.utils import extend_schema_view, extend_schema, OpenApiParameter, OpenApiExample
 
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
@@ -47,13 +55,42 @@ def send_email(appointment, subject, messege_template):
     except Exception as e:
         logger.error(f'Failed to send email to {patient_email}: {str(e)}')
 
-
+@extend_schema_view(
+    list=extend_schema(
+        tags=['Appointments'],
+        description='List appointments for authenticated user (or by patient_id query param for admins).',
+        parameters=[
+            OpenApiParameter(name='patient_id', description='Filter by patient ID (admin only)', type=int, location=OpenApiParameter.QUERY)
+        ],
+        responses={200: serializers.AppointmentSerializer(many=True)}
+    ),
+    retrieve=extend_schema(
+        tags=['Appointments'],
+        description='Retrieve single appointment details.'
+    ),
+    create=extend_schema(
+        tags=['Appointments'],
+        description='Create offline appointment (use create-online for online). Triggers confirmation email.',
+        request=serializers.AppointmentSerializer,
+        examples=[OpenApiExample('Offline Create', value={'doctor': 1, 'time': 1, 'appointment_type': 'Offline', 'symptom': 'Pain'})]
+    ),
+    update=extend_schema(tags=['Appointments'], description='Update appointment (restricted).'),
+    partial_update=extend_schema(tags=['Appointments'], description='Partial update (restricted).'),
+    destroy=extend_schema(tags=['Appointments'], description='Delete appointment (restricted).')
+)
 class AppointmentViewset(viewsets.ModelViewSet):
+    """
+    ViewSet for Appointment CRUD.
+    
+    Filters queryset to user's appointments; custom actions for online payment, webhook, cancellation.
+    """
     queryset = models.Appointment.objects.all().select_related('doctor', 'patient')  # Optimized N+1
+    # Prefetches related for efficiency in lists.
     serializer_class = serializers.AppointmentSerializer
     permission_classes = [IsAuthenticated, IsPatientOrAdmin]
 
     def get_queryset(self):
+        """Filter to user's appointments; admin can use patient_id param."""
         queryset = super().get_queryset()
 
 ############# Add Description for patient_id query params in swagger Documentation #####################
@@ -64,6 +101,13 @@ class AppointmentViewset(viewsets.ModelViewSet):
 
         return queryset.filter(patient__user=self.request.user)
 
+
+    @extend_schema(
+        tags=['Appointments'],
+        description="Create Stripe checkout session for online appointment. Returns session ID/URL for frontend redirect.",
+        request=serializers.AppointmentSerializer,
+        responses={200: OpenApiExample('Session Response', value={'session_id': 'cs_test_abc', 'session_url': 'https://checkout.stripe.com/pay/cs_test_abc'})}
+    )
     @action(detail=False, methods=['post'], permission_classes=[IsAuthenticated, IsPatientOrAdmin])
     def create_online(self, request):
         """For online appointments: Create Stripe Checkout session. Frontend redirects to session.url."""
@@ -106,7 +150,7 @@ class AppointmentViewset(viewsets.ModelViewSet):
         return Response({"error" : serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
     
     def create(self, request, *args, **kwargs):
-        """Override: For offline, create directly + PDF logic. For online, error → use checkout."""
+        """Override: For offline, create directly. For online, error → use checkout."""
         data = request.data
         if data.get('appointment_type') == 'Online':
             return Response({"message": "Use /create-online/ for online payments."}, status=status.HTTP_400_BAD_REQUEST)
@@ -129,6 +173,13 @@ class AppointmentViewset(viewsets.ModelViewSet):
             return Response({'appointment': serializer.data})
         return Response({"error" : serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
     
+    @extend_schema(
+        tags=['Appointments'],
+        description='Stripe webhook for payment completion. Creates appointment, sends email (no auth required).',
+        methods=['POST'],
+        request=None,  # Raw payload
+        responses={200: OpenApiExample('Success', value={'status': 'success'})}, 
+    )
     @action(detail=False, methods=['post'], url_path='webhook', permission_classes=[])
     @csrf_exempt
     def stripe_webhook(self, request):
@@ -185,7 +236,10 @@ class AppointmentViewset(viewsets.ModelViewSet):
 
         return JsonResponse({'status': 'success'}, status=status.HTTP_200_OK)
 
-
+    @extend_schema(
+        tags=['Appointments'],
+        description='Cancel appointment if eligible (within 24h, not completed). Refunds online payments via Stripe.'
+    )
     @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated, IsPatientOrAdmin])
     def cancel_appointment(self, request, pk=None):
         appointment = self.get_object()

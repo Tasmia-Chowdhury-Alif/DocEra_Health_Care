@@ -1,11 +1,35 @@
+"""
+Serializers for Appointment model. Includes validations for time availability/fee, derived fields (doctor_fee, can_cancel).
+"""
 from rest_framework import serializers
 from . import models
 from doctor.models import Doctor, AvailableTime
 from datetime import datetime, timedelta
 from django.utils import timezone
+from drf_spectacular.utils import extend_schema_serializer, OpenApiExample
 
 
+@extend_schema_serializer(
+    examples=[
+        OpenApiExample(
+            'Online Appointment Create',
+            value={'doctor': 1, 'time': 1, 'appointment_type': 'Online', 'symptom': 'Fever and cough'},
+            description='Example for creating an online appointment.'
+        ),
+        OpenApiExample(
+            'Offline Appointment Create',
+            value={'doctor': 2, 'time': 3, 'appointment_type': 'Offline', 'symptom': 'Back pain'},
+            description='Example for creating an offline appointment.'
+        )
+    ]
+)
 class AppointmentSerializer(serializers.ModelSerializer):
+    """
+    Serializer for Appointment model.
+    
+    Read-only fields for status/payment/created; validates doctor time/fee.
+    Derived: doctor_fee (read-only), can_cancel (time/status-based).
+    """
     patient = serializers.StringRelatedField()
     doctor = serializers.PrimaryKeyRelatedField(queryset=Doctor.objects.all())
     time = serializers.PrimaryKeyRelatedField(queryset=AvailableTime.objects.all())

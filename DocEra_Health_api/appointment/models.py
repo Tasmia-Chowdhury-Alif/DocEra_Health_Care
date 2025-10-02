@@ -22,8 +22,16 @@ PAYMENT_STATUS = [
 
 
 class Appointment(models.Model):
+    """
+    Model for booking appointments between patients and doctors.
+    
+    Supports online (Stripe payment, meet link email) and offline modes.
+    Status transitions: Pending -> Running/Completed/Cancelled.
+    """
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name="appointments")
+    # Linked patient; permissions restrict to own.
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name="appointments")
+    # Linked doctor; filters available times.
     appointment_type = models.CharField(choices=APPOINTMENT_TYPE, max_length=10)
     appointment_status = models.CharField(choices=APPOINTMENT_STATUS, max_length=10, default="Pending")
     payment_status = models.CharField(choices=PAYMENT_STATUS, default="unpaid", verbose_name="Payment Status")
