@@ -1,3 +1,5 @@
+"""Signals for automatic profile creation on User/Doctor save. Creates profiles, handles role switches, group assignments.
+"""
 import logging
 from django.db import transaction
 from django.db.models.signals import post_save

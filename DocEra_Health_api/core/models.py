@@ -1,7 +1,13 @@
+"""Core models for user profiles and roles."""
 from django.db import models
 from django.contrib.auth.models import User
 
 class UserProfile(models.Model):
+    """
+    Profile extension for User, defining roles (patient/doctor/admin).
+    
+    Created via signals on User/Doctor save.
+    """
     ROLE_CHOICES = (
         ('patient', 'Patient'),
         ('doctor', 'Doctor'),
