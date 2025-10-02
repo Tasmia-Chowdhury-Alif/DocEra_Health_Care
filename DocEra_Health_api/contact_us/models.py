@@ -2,6 +2,10 @@ from django.db import models
 
 # Create your models here.
 class ContactUs(models.Model):
+    """
+    Model for user contact forms.
+    Stores name, phone, problem description.
+    """
     name = models.CharField(max_length= 40)
     phone = models.CharField(max_length= 14)
     problem = models.TextField()
