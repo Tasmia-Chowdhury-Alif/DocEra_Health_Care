@@ -9,6 +9,7 @@ class PatientSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Patient
         fields = ("id", "user", "image", "mobile_no")
+        extra_kwargs = {'mobile_no': {'help_text': 'Format: +XXXXXXXXXXXX (10-14 digits).'}}
 
     def validate_mobile_no(self, value):
         if not re.match(r"^\+\d{10,14}$", value):
