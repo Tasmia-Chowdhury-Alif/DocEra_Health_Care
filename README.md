@@ -117,7 +117,7 @@ pip install -r requirements.txt
 ```
 
 ### 4️⃣ Environment Variables (.env)
-```bash
+```env
 SECRET_KEY=your_django_secret_key
 DJANGO_DEBUG=True
 DATABASE_ENGINE=postgresql
