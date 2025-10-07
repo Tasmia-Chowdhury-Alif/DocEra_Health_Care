@@ -16,8 +16,7 @@
 
 ## ⚡ Overview  
 
-**DocEra Health Care** is a **secure and scalable hospital management API** built with **Django & Django REST Framework**.  
-It handles **authentication, appointments, payments, doctors, patients, reviews, and services** with strong emphasis on **security, scalability, and clean architecture**.  
+**DocEra Health Care** is a **secure and scalable hospital management API** built with **Django & Django REST Framework**. It handles **authentication, appointments, payments, doctors, patients, reviews, and services** with strong emphasis on **security, scalability, and clean architecture**.  
 
 👉 **Frontend** integration coming soon!  
 
